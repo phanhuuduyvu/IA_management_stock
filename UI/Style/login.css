@@ -1,0 +1,146 @@
+:root{
+  /* Brand palette for light mode (blue accent trên nền sáng) */
+  --brand-50:#f8fafc;      /* nền phụ rất nhạt */
+  --brand-75:#f9fafb;      /* nền phụ */
+  --brand-100:#ffffff;     /* nền chính */
+  --brand-200:#f1f5f9;     /* xám xanh rất nhạt */
+  --brand-300:#e2e8f0;     /* viền nhạt */
+  --brand-400:#cbd5e1;     /* xám trung tính */
+
+  --brand-500:#3b82f6;     /* primary */
+  --brand-600:#2563eb;     /* primary hover */
+
+  --text-100:#0f172a;      /* text chính (đậm) */
+  --text-200:#475569;      /* text phụ */
+  --border-100:#e2e8f0;    /* viền control/menu/card */
+  --shadow-rgb: 15,23,42;  /* xanh than dùng cho bóng đổ */
+}
+
+html { color-scheme: light; }
+
+body{
+  color: var(--text-100);
+  background:
+    radial-gradient(1200px 700px at -10% -20%, rgba(59,130,246,.10) 0%, transparent 60%),
+    radial-gradient(900px 600px at 110% 10%, rgba(37,99,235,.08) 0%, transparent 60%),
+    linear-gradient(180deg, var(--brand-50), var(--brand-100));
+}
+
+/* Nền mềm có vệt xanh nhẹ (light) */
+.bg-soft{
+  background:
+    radial-gradient(1200px 600px at 10% -20%, rgba(59,130,246,.12) 0%, transparent 60%),
+    radial-gradient(900px 500px at 110% 10%, rgba(37,99,235,.08) 0%, transparent 60%),
+    linear-gradient(180deg, var(--brand-50), var(--brand-100));
+}
+
+/* Card hover nhẹ, shadow tối hơn một chút để nổi trên nền sáng */
+.card-raise{
+  transform: translateY(0);
+  transition: transform .25s ease, box-shadow .25s ease, background-color .25s ease, border-color .25s ease;
+  background-color: var(--brand-100);
+  border: 1px solid var(--border-100);
+}
+.card-raise:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 1rem 2rem rgba(var(--shadow-rgb), .12);
+}
+
+/* Header gradient xanh trên nền sáng */
+.bg-gradient-primary{
+  background: linear-gradient(135deg, var(--brand-500), var(--brand-600));
+  color:#fff;
+  border-bottom: 1px solid rgba(0,0,0,.06);
+}
+
+/* Button primary giữ contrast */
+.btn-primary{
+  background-color: var(--brand-500);
+  border-color: var(--brand-500);
+  color:#fff;
+}
+.btn-primary:hover{
+  background-color: var(--brand-600);
+  border-color: var(--brand-600);
+  color:#fff;
+}
+
+/* Outline button trong light mode */
+.btn-outline-secondary{
+  color: var(--text-100);
+  border-color: var(--border-100);
+  background-color: transparent;
+}
+.btn-outline-secondary:hover{
+  color: var(--text-100);
+  background-color: var(--brand-200);
+  border-color: var(--brand-300);
+}
+
+/* Links xanh, hover đậm hơn */
+a.link-primary{ color: var(--brand-600); }
+a.link-primary:hover{ color: #1e40af; }
+
+/* Logo trong header sát trái, nền sáng + viền mảnh */
+.header-logo{
+  width: 48px; height: 48px; object-fit: cover;
+  background: var(--brand-200);
+  border: 1px solid var(--border-100);
+  border-radius: .5rem;
+  box-shadow: 0 4px 12px rgba(var(--shadow-rgb), .10);
+  display:block;
+}
+
+/* Thanh header 3 cột: [logo] [title-center] [spacer] */
+.header-bar{
+  display: grid;
+  grid-template-columns: auto 1fr auto; /* logo | center | spacer */
+  column-gap: .75rem;
+}
+
+/* Spacer bên phải = kích thước logo để tiêu đề thực sự giữa */
+.header-spacer{
+  width: 48px;
+  height: 48px;
+}
+
+/* Form controls trên nền sáng */
+.form-control{
+  background-color: #fff;
+  color: var(--text-100);
+  border: 1px solid var(--border-100);
+  padding-top:.8rem; padding-bottom:.8rem; border-radius:.75rem;
+}
+.form-control::placeholder{ color: var(--text-200); opacity:.8; }
+.form-control:focus{
+  background-color: #fff;
+  color: var(--text-100);
+  border-color: var(--brand-500);
+  box-shadow: 0 0 0 .2rem rgba(59,130,246,.20);
+}
+
+/* Input group button bo tròn phải khớp input */
+.input-group>.btn{
+  border-top-right-radius:.75rem; border-bottom-right-radius:.75rem;
+}
+
+/* Checkbox sáng */
+.form-check-input{
+  background-color: #fff;
+  border: 1px solid var(--border-100);
+}
+.form-check-input:checked{
+  background-color: var(--brand-500);
+  border-color: var(--brand-500);
+}
+
+/* Card/footer/menu đồng bộ nền sáng */
+.card, .modal-content, .dropdown-menu{
+  background-color: var(--brand-100);
+  color: var(--text-100);
+  border: 1px solid var(--border-100);
+}
+
+/* Small tweaks */
+hr{ border-color: var(--border-100); opacity:1; }
+.text-muted{ color: var(--text-200) !important; }

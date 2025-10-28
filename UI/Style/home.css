@@ -1,0 +1,33 @@
+.custom-navbar{
+   border: 1px solid black;
+   border-radius: 9px;
+   position: sticky;
+   top: 0;
+   z-index: 1000;
+}
+
+.navbar-brand span{
+   line-height: 1.2;
+}
+   
+.custom-link.active{
+   background-color:cyan;
+   font-weight: 600;
+}
+
+.layout { margin-top: 0; }
+    aside { width: 250px; min-height: 100vh; }
+
+.chart-container {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  justify-content: space-between;
+}
+.chart-card {
+  background: white;
+  border-radius: 6px;
+  padding: 20px;
+  flex: 1;
+}
+   
