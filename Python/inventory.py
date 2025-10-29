@@ -35,7 +35,7 @@ def get_conn():
 app = FastAPI(title="Inventory API", version="1.1 (auto-resolve table/cols)")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5500", "http://127.0.0.1:5500", "http://localhost", "http://127.0.0.1"],
+    allow_origins=["http://localhost:5500", "http://127.0.0.1:5500", "http://localhost:5501", "http://127.0.0.1:5501","http://localhost:5503", "http://127.0.0.1:5503","http://localhost:5502", "http://127.0.0.1:5502",   "http://localhost", "http://127.0.0.1"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
