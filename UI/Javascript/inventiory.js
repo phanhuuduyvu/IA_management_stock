@@ -45,10 +45,33 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.removeItem(LS.accessExp);
     localStorage.removeItem(LS.refresh);
     localStorage.removeItem(LS.refreshExp);
-    // localStorage.removeItem(LS.me); // tùy bạn
+    // localStorage.removeItem(LS.me); // optional
   };
 
+  // =============== LOGOUT (same behavior as home.js) ===============
+  async function doLogout(e) {
+    e?.preventDefault?.();
+    try {
+      const at = getAT();
+      if (at) {
+        await fetch(ROUTES.logout, {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${at}` },
+          cache: "no-store",
+        });
+      }
+    } catch { /* ignore network errors */ }
+    clearTokens();
+    location.href = "./login.html";
+  }
+
+  // Bind logout button early
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) logoutBtn.addEventListener("click", doLogout);
+
+  // =============== REFRESH / AUTHED FETCH =================
   let refreshing = null;
+
   async function refreshAccessToken() {
     if (refreshing) return refreshing;
     const rt = getRT();
@@ -81,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
     await refreshAccessToken();
   }
 
-  // Chuẩn fetch có gắn Bearer + tự refresh nếu 401
+  // Standard fetch with Bearer and auto-refresh on 401
   async function apiFetch(url, options = {}, { auth = "access", retryOn401 = true } = {}) {
     const headers = new Headers({ Accept: "application/json", ...(options.headers || {}) });
     const opts = { method: "GET", ...options, headers, cache: "no-store" };
@@ -102,8 +125,8 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         await refreshAccessToken();
         const headers2 = new Headers({ Accept: "application/json" });
-        const at2 = getAT();
         if (opts.body && !(opts.body instanceof FormData)) headers2.set("Content-Type", "application/json");
+        const at2 = getAT();
         if (at2) headers2.set("Authorization", `Bearer ${at2}`);
         res = await fetch(url, { method: opts.method, body: opts.body, headers: headers2, cache: "no-store" });
       } catch { /* fallthrough */ }
@@ -322,7 +345,13 @@ document.addEventListener("DOMContentLoaded", () => {
   function refreshAndRender() {
     fetchInventory()
       .then(renderTable)
-      .catch(err => { toast(err.message, "error"); if (/401|expired/i.test(err.message)) { clearTokens(); location.href="./login.html"; } });
+      .catch(err => {
+        toast(err.message, "error");
+        if (/401|expired/i.test(err.message)) {
+          clearTokens();
+          location.href = "./login.html";
+        }
+      });
   }
 
   if (searchBtn) searchBtn.addEventListener("click", (e) => {
@@ -343,8 +372,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const id = Number(del.dataset.id);
       const type = del.dataset.type; // Raw | Finished
       if (confirm("Delete this item?")) {
-        deleteItem(id, type).then(() => { toast("Deleted"); refreshAndRender(); })
-                            .catch(err => { toast(err.message, "error"); if (/401|expired/i.test(err.message)) { clearTokens(); location.href="./login.html"; } });
+        deleteItem(id, type)
+          .then(() => { toast("Deleted"); refreshAndRender(); })
+          .catch(err => {
+            toast(err.message, "error");
+            if (/401|expired/i.test(err.message)) { clearTokens(); location.href="./login.html"; }
+          });
       }
       return;
     }
@@ -422,8 +455,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const after = () => { modalObj?.hide(); refreshAndRender(); };
 
     if (editMode !== "edit" || !editingKey) {
-      createItem(payload).then(() => { toast("Created"); after(); })
-        .catch(err => { toast(err.message, "error"); if (/401|expired/i.test(err.message)) { clearTokens(); location.href="./login.html"; } });
+      createItem(payload)
+        .then(() => { toast("Created"); after(); })
+        .catch(err => {
+          toast(err.message, "error");
+          if (/401|expired/i.test(err.message)) { clearTokens(); location.href="./login.html"; }
+        });
       return;
     }
 
@@ -432,8 +469,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const newType = payload.type;
 
     if (oldType === newType) {
-      updateItem(oldId, oldType, payload).then(() => { toast("Updated"); after(); })
-        .catch(err => { toast(err.message, "error"); if (/401|expired/i.test(err.message)) { clearTokens(); location.href="./login.html"; } });
+      updateItem(oldId, oldType, payload)
+        .then(() => { toast("Updated"); after(); })
+        .catch(err => {
+          toast(err.message, "error");
+          if (/401|expired/i.test(err.message)) { clearTokens(); location.href="./login.html"; }
+        });
       return;
     }
 
@@ -443,7 +484,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     migrateItem(oldId, oldType, payload)
       .then(() => { toast(`Moved to ${newType}`); after(); })
-      .catch(err => { toast(err.message, "error"); if (/401|expired/i.test(err.message)) { clearTokens(); location.href="./login.html"; } });
+      .catch(err => {
+        toast(err.message, "error");
+        if (/401|expired/i.test(err.message)) { clearTokens(); location.href="./login.html"; }
+      });
   });
 
   // =============== INIT (LOGIN CHECK FIRST) ===============
@@ -451,6 +495,17 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       await requireLogin();               // ⟵ bắt buộc đăng nhập
       await apiFetch(ROUTES.health).catch(()=>{});
+      // (Optional) paint user name if you have a #greetName on this page
+      try {
+        const me = await apiFetch(ROUTES.me, { method: "GET" }, { auth: "access" });
+        localStorage.setItem(LS.me, JSON.stringify(me || {}));
+        const greet = document.querySelector("#greetName");
+        if (greet) {
+          const name = me?.full_name || me?.username || me?.email || "User";
+          greet.textContent = `${name}`;
+        }
+      } catch { /* ignore */ }
+
       refreshAndRender();
     } catch (e) {
       // requireLogin đã redirect; ở đây chỉ dự phòng

@@ -1,0 +1,79 @@
+/* ===== Cards ===== */
+.card-raise{
+  border: 1px solid #e9ecef;
+  border-radius: 1rem;
+  box-shadow: 0 6px 18px rgba(0,0,0,.06);
+  transition: box-shadow .18s ease, transform .18s ease;
+}
+.card-raise:hover{
+  box-shadow: 0 10px 28px rgba(0,0,0,.09);
+  transform: translateY(-1px);
+}
+
+/* ===== Table + Sorting ===== */
+.table{ font-size: .95rem; }
+.table th, .table td{ vertical-align: middle; }
+
+/* click-to-sort headers */
+th.sortable{
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  position: relative;
+}
+
+/* default little caret (using your .sort-ind span) */
+th.sortable .sort-ind{
+  display: inline-block;
+  margin-left: .35rem;
+  width: 0; height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 6px solid currentColor;   /* caret up by default */
+  opacity: .35;
+  transform-origin: 50% 40%;
+  transition: transform .15s ease, opacity .15s ease;
+}
+
+/* when sorted (support both class & aria-sort) */
+th.sortable.sorted-asc .sort-ind,
+th.sortable[aria-sort="ascending"] .sort-ind{
+  opacity: .9;
+  transform: rotate(180deg);            /* point down for ASC */
+}
+th.sortable.sorted-desc .sort-ind,
+th.sortable[aria-sort="descending"] .sort-ind{
+  opacity: .9;                          /* default caret points up for DESC */
+}
+
+/* optional: sticky header when table is in a scroll container */
+.table-sticky thead th{
+  position: sticky; top: 0; z-index: 2;
+  background: var(--bs-body-bg, #fff);
+  box-shadow: inset 0 -1px 0 #dee2e6;
+}
+
+/* narrow screens: reduce padding a bit */
+@media (max-width: 576px){
+  .table th, .table td{ padding: .55rem .6rem; }
+}
+
+/* ===== Pager ===== */
+#pager .page-link{
+  min-width: 2.25rem;
+  text-align: center;
+  border-radius: .5rem;
+  transition: background-color .15s ease, box-shadow .15s ease;
+}
+#pager .page-item.active .page-link{
+  color: #fff;
+  background-color: var(--bs-primary);
+  border-color: var(--bs-primary);
+}
+#pager .page-link:hover{ background-color: #f8f9fa; }
+#pager .page-link:focus{
+  box-shadow: 0 0 0 .2rem rgba(var(--bs-primary-rgb,13,110,253), .25);
+}
+
+/* ===== Utility (optional) ===== */
+.table-compact .table th, .table-compact .table td{ padding: .5rem .7rem; }
